@@ -1,8 +1,12 @@
 version: 2.1
 jobs:
   build:
-    docker: 
-      - image: circleci/node:4.8.2
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: ./gradlew test
+      - store_test_results:
+        path: build/test-results/test
+      - store_artifacts:
+        path: build/test-results/test
