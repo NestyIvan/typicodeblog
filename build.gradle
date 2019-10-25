@@ -1,0 +1,16 @@
+// Apply the java plugin to add support for Java
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.25'
+    testImplementation 'io.rest-assured:rest-assured:4.1.2'
+    testImplementation 'junit:junit:4.12'
+}
+
+test{
+    useJUnit()
+}
