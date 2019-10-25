@@ -5,8 +5,11 @@ jobs:
       - image: circleci/openjdk:11.0.3-jdk-stretch
     steps:
       - checkout
-      - run: ./gradlew test
+      - run:
+        name: Run tests
+        command:
+          ./gradlew test
       - store_test_results:
-        path: build/test-results/test
+          path: build/test-results/test
       - store_artifacts:
-        path: build/test-results/test
+          path: build/test-results/test
