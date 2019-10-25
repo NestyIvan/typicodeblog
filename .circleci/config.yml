@@ -6,9 +6,8 @@ jobs:
     steps:
       - checkout
       - run:
-        name: Run tests
-        command:
-          ./gradlew test
+          name: Run tests
+          command: ./gradlew test
       - store_test_results:
           path: build/test-results/test
       - store_artifacts:
