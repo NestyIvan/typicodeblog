@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -42,12 +44,43 @@ public class TestComments {
 
         //Get the list of posts.
         posts = given().get(EndPoints.posts).as(new TypeRef<List<Map<String, Object>>>() {});
+        assertTrue(posts.size() > 0);//potentially a bug in the test data
+    }
+
+    private boolean checkMailFormat(String email, String postID){
+        /*This one possible regex to validate emails from many possible others.
+        * The rules for validation may vary from project to project.
+        * This regex validates following rules:
+        * 0) @ sign should be presented
+        * 1) A-Z characters allowed
+        * 2) a-z characters allowed
+        * 3) 0-9 numbers allowed
+        * 4) Dots(.), dashes(-) and underscores(_) are allowed
+        * 5) Rest all characters are not allowed
+        */
+        String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        if(!matcher.matches()){
+            logger.error(String.format("The email %s of the post %s is in wrong format.", email, postID));
+            return false;
+        }
+        return true;
     }
 
     @Test
     public void testComments(){
-        List<Map<String, Object>> comments = given().get(EndPoints.comments, posts.get(0).get("id"))
-                .as(new TypeRef<List<Map<String, Object>>>() {});
-        assertTrue(comments.size() > 0);
+        for(Map<String, Object> post : posts){
+        //Map<String, Object> post = posts.get(0);
+            String postID = post.get("id").toString();
+            List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
+                    .as(new TypeRef<List<Map<String, Object>>>() {});
+            //iterate through comments of each post
+            for(Map<String, Object> comment : comments) {
+                String email = comment.get("email").toString();
+                assertTrue(String.format("The email %s of the post %s is in wrong format.", email, postID),
+                        checkMailFormat(email, postID));
+            }
+        }
     }
 }
