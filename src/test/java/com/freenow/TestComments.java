@@ -38,17 +38,17 @@ public class TestComments {
         assertTrue("No posts have been found for the user",concurrentPosts.size() > 0);
     }
 
+    /*A possible regex to validate emails among many others.
+     * The rules for validation may vary from project to project.
+     * This particular regex validates following rules:
+     * 0) @ sign should be presented
+     * 1) A-Z characters allowed
+     * 2) a-z characters allowed
+     * 3) 0-9 numbers allowed
+     * 4) Dots(.), dashes(-) and underscores(_) are allowed
+     * 5) Rest all characters are not allowed
+    */
     private boolean checkMailFormat(String email, String postID){
-        /*This is one possible regex to validate emails among many others.
-        * The rules for validation may vary from project to project.
-        * This particular regex validates following rules:
-        * 0) @ sign should be presented
-        * 1) A-Z characters allowed
-        * 2) a-z characters allowed
-        * 3) 0-9 numbers allowed
-        * 4) Dots(.), dashes(-) and underscores(_) are allowed
-        * 5) Rest all characters are not allowed
-        */
         String regex = "^[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
@@ -74,12 +74,17 @@ public class TestComments {
         }
     }
 
+    private int getCoreNumber(){
+        int cores = Runtime.getRuntime().availableProcessors();
+        return Math.min(cores, concurrentPosts.size());
+    }
+
     @Test
     public void testComments(){
         initPosts();
         //Init required number of Threads. Each thread will poll the head post
         // and validate comments until there are posts in the Queue
-        int cores = Runtime.getRuntime().availableProcessors();
+        int cores = getCoreNumber();
         logger.info(String.format("Start processing %d posts with %d threads.",
                 concurrentPosts.size(), cores));
         List<Thread> threads = new ArrayList<>();
