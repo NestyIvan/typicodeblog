@@ -28,7 +28,7 @@ public class TestComments {
     private static final String POST_EMAIL = "email";
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         RestAssured.requestSpecification = Settings.requestSpec;
         RestAssured.responseSpecification = Settings.responseSpec;
     }
@@ -64,7 +64,6 @@ public class TestComments {
     }
 
     private void checkPost(Map<String, Object> post){
-        //TODO: use constants for string values
         String postID = post.get(TestComments.POST_ID).toString();
         List<Map<String, Object>> comments = given().get(EndPoints.COMMENTS, postID)
                 .as(new TypeRef<List<Map<String, Object>>>() {});

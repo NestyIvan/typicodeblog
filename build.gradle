@@ -17,4 +17,6 @@ dependencies {
 
 test{
     useJUnit()
+    systemProperty "blog.base.uri", baseURI
+    systemProperty "samantha.id", samanthaID
 }

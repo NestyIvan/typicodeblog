@@ -8,9 +8,8 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public final class Settings {
-    //TODO: use environment\gradle variable instead
-    public static String BASE_URI = "https://jsonplaceholder.typicode.com";
-    public static final int SAMANTHA_ID = 3;
+    public static String BASE_URI = System.getProperty("blog.base.uri");
+    public static final int SAMANTHA_ID = Integer.parseInt(System.getProperty("samantha.id"));
 
     public static final RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri(BASE_URI)

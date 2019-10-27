@@ -19,7 +19,7 @@ public class UserTest {
             LoggerFactory.getLogger(UserTest.class);
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp() {
         RestAssured.requestSpecification = Settings.requestSpec;
         RestAssured.responseSpecification = Settings.responseSpec;
     }
