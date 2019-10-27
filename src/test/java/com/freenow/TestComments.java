@@ -23,9 +23,9 @@ public class TestComments {
             LoggerFactory.getLogger(TestComments.class);
     static ConcurrentLinkedQueue<Map<String, Object>> concurrentPosts;
 
-    private static final String postID = "id";
-    private static final String title = "title";
-    private static final String email = "email";
+    private static final String POST_ID = "id";
+    private static final String POST_TITLE = "title";
+    private static final String POST_EMAIL = "email";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -36,7 +36,7 @@ public class TestComments {
     private void initPosts(){
         //Get the list of posts.
         List<Map<String, Object>> posts = given()
-                .get(EndPoints.posts).as(new TypeRef<List<Map<String, Object>>>() {});
+                .get(EndPoints.POSTS).as(new TypeRef<List<Map<String, Object>>>() {});
         concurrentPosts = new ConcurrentLinkedQueue();
         concurrentPosts.addAll(posts);
         assertTrue("No posts have been found for the user",concurrentPosts.size() > 0);
@@ -65,14 +65,14 @@ public class TestComments {
 
     private void checkPost(Map<String, Object> post){
         //TODO: use constants for string values
-        String postID = post.get(TestComments.postID).toString();
-        List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
+        String postID = post.get(TestComments.POST_ID).toString();
+        List<Map<String, Object>> comments = given().get(EndPoints.COMMENTS, postID)
                 .as(new TypeRef<List<Map<String, Object>>>() {});
         logger.info(String.format("Validating %d comments of the post %s and title: %s",
-                comments.size(), postID, post.get(TestComments.title).toString()));
+                comments.size(), postID, post.get(TestComments.POST_TITLE).toString()));
         //iterate through comments of each post
         for(Map<String, Object> comment : comments) {
-            String email = comment.get(TestComments.email).toString();
+            String email = comment.get(TestComments.POST_EMAIL).toString();
             assertTrue(String.format("The email %s of the post %s is in wrong format.", email, postID),
                     checkMailFormat(email, postID));
         }

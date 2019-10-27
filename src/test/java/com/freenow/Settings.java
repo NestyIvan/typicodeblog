@@ -9,11 +9,11 @@ import io.restassured.specification.ResponseSpecification;
 
 public final class Settings {
     //TODO: use environment\gradle variable instead
-    public static String baseURI = "https://jsonplaceholder.typicode.com";
-    public static final int samanthaID = 3;
+    public static String BASE_URI = "https://jsonplaceholder.typicode.com";
+    public static final int SAMANTHA_ID = 3;
 
     public static final RequestSpecification requestSpec = new RequestSpecBuilder()
-            .setBaseUri(baseURI)
+            .setBaseUri(BASE_URI)
             .setAccept(ContentType.JSON)
             .setContentType(ContentType.ANY)
             .log(LogDetail.ALL)

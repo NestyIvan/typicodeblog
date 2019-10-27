@@ -26,9 +26,9 @@ public class UserTest {
 
     @Test
     public void testSamanthaProfile(){
-        User user = given().get(EndPoints.user).as(User.class);
+        User user = given().get(EndPoints.USER).as(User.class);
         assertThat(user.name, equalTo("Clementine Bauch"));
-        assertThat(user.id, equalTo(Settings.samanthaID));
+        assertThat(user.id, equalTo(Settings.SAMANTHA_ID));
         assertThat(user.username, equalTo("Samantha"));
         assertThat(user.email, equalTo("Nathan@yesenia.net"));
         assertThat(user.phone, equalTo("1-463-123-4447"));
