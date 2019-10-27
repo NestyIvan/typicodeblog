@@ -7,8 +7,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,16 +21,21 @@ public class TestComments {
 
     static final Logger logger =
             LoggerFactory.getLogger(TestComments.class);
-    static List<Map<String, Object>> posts;
+    static ConcurrentLinkedQueue<Map<String, Object>> concurrentPosts;
 
     @BeforeClass
     public static void setUp() throws Exception {
         RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
         RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
+    }
+
+    private void initPosts(){
         //Get the list of posts.
-        posts = given().get(EndPoints.posts).as(new TypeRef<List<Map<String, Object>>>() {});
-        //potentially a bug in the test data
-        assertTrue("No posts have been found for the user",posts.size() > 0);
+        List<Map<String, Object>> posts = given()
+                .get(EndPoints.posts).as(new TypeRef<List<Map<String, Object>>>() {});
+        concurrentPosts = new ConcurrentLinkedQueue();
+        concurrentPosts.addAll(posts);
+        assertTrue("No posts have been found for the user",concurrentPosts.size() > 0);
     }
 
     private boolean checkMailFormat(String email, String postID){
@@ -52,20 +59,43 @@ public class TestComments {
         return true;
     }
 
+    private void checkPost(Map<String, Object> post){
+        //TODO: use constants for string values
+        String postID = post.get("id").toString();
+        List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
+                .as(new TypeRef<List<Map<String, Object>>>() {});
+        logger.info(String.format("Validating %d comments of the post %s and title: %s",
+                comments.size(), postID, post.get("title").toString()));
+        //iterate through comments of each post
+        for(Map<String, Object> comment : comments) {
+            String email = comment.get("email").toString();
+            assertTrue(String.format("The email %s of the post %s is in wrong format.", email, postID),
+                    checkMailFormat(email, postID));
+        }
+    }
+
     @Test
     public void testComments(){
-        for(Map<String, Object> post : posts){
-        //Map<String, Object> post = posts.get(0);
-            String postID = post.get("id").toString();
-            List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
-                    .as(new TypeRef<List<Map<String, Object>>>() {});
-            logger.info(String.format("Validating %d comments of the post %s and title: %s",
-                    comments.size(), postID, post.get("title").toString()));
-            //iterate through comments of each post
-            for(Map<String, Object> comment : comments) {
-                String email = comment.get("email").toString();
-                assertTrue(String.format("The email %s of the post %s is in wrong format.", email, postID),
-                        checkMailFormat(email, postID));
+        initPosts();
+        //Init required number of Threads. Each thread will poll the head post
+        // and validate comments until there are posts in the Queue
+        List<Thread> threads = new ArrayList<>();
+        for(int i = 0; i < 4; i++){
+            Runnable task = () -> {
+                while(concurrentPosts.size() > 0){
+                    checkPost(concurrentPosts.poll());
+                }
+            };
+            Thread t = new Thread(task);
+            threads.add(t);
+            t.start();
+        }
+
+        for(Thread t : threads){
+            try {
+                t.join();
+            } catch (InterruptedException e) {
+                logger.error("Thread was interrupted:" + e.getMessage());
             }
         }
     }
