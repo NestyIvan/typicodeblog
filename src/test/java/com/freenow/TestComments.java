@@ -79,8 +79,11 @@ public class TestComments {
         initPosts();
         //Init required number of Threads. Each thread will poll the head post
         // and validate comments until there are posts in the Queue
+        int cores = Runtime.getRuntime().availableProcessors();
+        logger.info(String.format("Start processing %d posts with %d threads.",
+                concurrentPosts.size(), cores));
         List<Thread> threads = new ArrayList<>();
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < cores; i++){
             Runnable task = () -> {
                 while(concurrentPosts.size() > 0){
                     checkPost(concurrentPosts.poll());
