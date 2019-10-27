@@ -23,10 +23,14 @@ public class TestComments {
             LoggerFactory.getLogger(TestComments.class);
     static ConcurrentLinkedQueue<Map<String, Object>> concurrentPosts;
 
+    private static final String postID = "id";
+    private static final String title = "title";
+    private static final String email = "email";
+
     @BeforeClass
     public static void setUp() throws Exception {
-        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
-        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
+        RestAssured.requestSpecification = Settings.requestSpec;
+        RestAssured.responseSpecification = Settings.responseSpec;
     }
 
     private void initPosts(){
@@ -61,14 +65,14 @@ public class TestComments {
 
     private void checkPost(Map<String, Object> post){
         //TODO: use constants for string values
-        String postID = post.get("id").toString();
+        String postID = post.get(TestComments.postID).toString();
         List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
                 .as(new TypeRef<List<Map<String, Object>>>() {});
         logger.info(String.format("Validating %d comments of the post %s and title: %s",
-                comments.size(), postID, post.get("title").toString()));
+                comments.size(), postID, post.get(TestComments.title).toString()));
         //iterate through comments of each post
         for(Map<String, Object> comment : comments) {
-            String email = comment.get("email").toString();
+            String email = comment.get(TestComments.email).toString();
             assertTrue(String.format("The email %s of the post %s is in wrong format.", email, postID),
                     checkMailFormat(email, postID));
         }

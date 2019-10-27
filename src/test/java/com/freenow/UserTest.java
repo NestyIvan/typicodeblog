@@ -20,15 +20,15 @@ public class UserTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
-        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
+        RestAssured.requestSpecification = Settings.requestSpec;
+        RestAssured.responseSpecification = Settings.responseSpec;
     }
 
     @Test
     public void testSamanthaProfile(){
         User user = given().get(EndPoints.user).as(User.class);
         assertThat(user.name, equalTo("Clementine Bauch"));
-        assertThat(user.id, equalTo(3));
+        assertThat(user.id, equalTo(Settings.samanthaID));
         assertThat(user.username, equalTo("Samantha"));
         assertThat(user.email, equalTo("Nathan@yesenia.net"));
         assertThat(user.phone, equalTo("1-463-123-4447"));
