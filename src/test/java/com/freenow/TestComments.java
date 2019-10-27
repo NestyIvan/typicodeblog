@@ -1,14 +1,9 @@
 package com.freenow;
 
+import com.freenow.pojos.RestAssuredSettings;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.common.mapper.TypeRef;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertTrue;
 
 public class TestComments {
@@ -28,29 +22,20 @@ public class TestComments {
             LoggerFactory.getLogger(TestComments.class);
     static List<Map<String, Object>> posts;
 
-    @Before
-    public void setUp() throws Exception {
-        RequestSpecification requestSpec = new RequestSpecBuilder()
-                .setBaseUri("https://jsonplaceholder.typicode.com")
-                .setAccept(ContentType.JSON)
-                .setContentType(ContentType.ANY)
-                .log(LogDetail.ALL)
-                .build();
-        RestAssured.requestSpecification = requestSpec;
-
-        ResponseSpecification responseSpec = new ResponseSpecBuilder()
-                .expectStatusCode(200)
-                .build();
-
+    @BeforeClass
+    public static void setUp() throws Exception {
+        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
+        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
         //Get the list of posts.
         posts = given().get(EndPoints.posts).as(new TypeRef<List<Map<String, Object>>>() {});
-        assertTrue(posts.size() > 0);//potentially a bug in the test data
+        //potentially a bug in the test data
+        assertTrue("No posts have been found for the user",posts.size() > 0);
     }
 
     private boolean checkMailFormat(String email, String postID){
-        /*This one possible regex to validate emails from many possible others.
+        /*This is one possible regex to validate emails among many others.
         * The rules for validation may vary from project to project.
-        * This regex validates following rules:
+        * This particular regex validates following rules:
         * 0) @ sign should be presented
         * 1) A-Z characters allowed
         * 2) a-z characters allowed
@@ -75,6 +60,8 @@ public class TestComments {
             String postID = post.get("id").toString();
             List<Map<String, Object>> comments = given().get(EndPoints.comments, postID)
                     .as(new TypeRef<List<Map<String, Object>>>() {});
+            logger.info(String.format("Validating %d comments of the post %s and title: %s",
+                    comments.size(), postID, post.get("title").toString()));
             //iterate through comments of each post
             for(Map<String, Object> comment : comments) {
                 String email = comment.get("email").toString();

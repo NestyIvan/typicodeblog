@@ -1,20 +1,12 @@
 package com.freenow;
 
-import com.freenow.pojos.Address;
-import com.freenow.pojos.Company;
-import com.freenow.pojos.Geo;
-import com.freenow.pojos.User;
+import com.freenow.pojos.*;
 import io.restassured.RestAssured;
-import io.restassured.builder.RequestSpecBuilder;
-import io.restassured.builder.ResponseSpecBuilder;
-import io.restassured.filter.log.LogDetail;
-import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
-import io.restassured.specification.ResponseSpecification;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
@@ -26,20 +18,10 @@ public class UserTest {
     static final Logger logger =
             LoggerFactory.getLogger(UserTest.class);
 
-    @Before
-    public void setUp() throws Exception {
-        RequestSpecification requestSpec = new RequestSpecBuilder()
-                .setBaseUri("https://jsonplaceholder.typicode.com")
-                .setAccept(ContentType.JSON)
-                .setContentType(ContentType.ANY)
-                .log(LogDetail.ALL)
-                .build();
-        RestAssured.requestSpecification = requestSpec;
-
-        ResponseSpecification responseSpec = new ResponseSpecBuilder()
-                .expectStatusCode(200)
-                .build();
-        RestAssured.responseSpecification = responseSpec;
+    @BeforeClass
+    public static void setUp() throws Exception {
+        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
+        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
     }
 
     @Test
