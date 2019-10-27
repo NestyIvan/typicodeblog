@@ -1,4 +1,4 @@
-package com.freenow.pojos;
+package com.freenow;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;

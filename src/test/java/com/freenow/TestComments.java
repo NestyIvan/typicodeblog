@@ -1,6 +1,5 @@
 package com.freenow;
 
-import com.freenow.pojos.RestAssuredSettings;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.BeforeClass;
