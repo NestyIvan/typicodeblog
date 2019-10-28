@@ -1,6 +1,9 @@
 package com.freenow;
 
-import com.freenow.pojos.*;
+import com.freenow.pojos.Address;
+import com.freenow.pojos.Company;
+import com.freenow.pojos.Geo;
+import com.freenow.pojos.User;
 import com.freenow.settings.RestAssuredSettings;
 import com.freenow.settings.UserSettings;
 import io.restassured.RestAssured;
@@ -11,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
