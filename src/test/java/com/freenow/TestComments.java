@@ -1,5 +1,7 @@
 package com.freenow;
 
+import com.freenow.settings.RestAssuredSettings;
+import com.freenow.settings.UserSettings;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.junit.BeforeClass;

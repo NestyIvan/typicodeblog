@@ -1,4 +1,4 @@
-package com.freenow;
+package com.freenow.settings;
 
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;

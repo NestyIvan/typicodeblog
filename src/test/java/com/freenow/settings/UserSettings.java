@@ -1,5 +1,6 @@
-package com.freenow;
+package com.freenow.settings;
 
+import com.freenow.EndPoints;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
 import org.slf4j.Logger;

@@ -1,6 +1,8 @@
 package com.freenow;
 
 import com.freenow.pojos.*;
+import com.freenow.settings.RestAssuredSettings;
+import com.freenow.settings.UserSettings;
 import io.restassured.RestAssured;
 import org.junit.BeforeClass;
 import org.junit.Test;
