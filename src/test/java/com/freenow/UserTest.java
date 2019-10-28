@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 /**
- * A test cases to verify the user Samantha
+ * A test cases to verify the user
  */
 public class UserTest {
     static final Logger logger =
@@ -20,15 +21,15 @@ public class UserTest {
 
     @BeforeClass
     public static void setUp() {
-        RestAssured.requestSpecification = Settings.requestSpec;
-        RestAssured.responseSpecification = Settings.responseSpec;
+        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
+        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
     }
 
     @Test
     public void testSamanthaProfile(){
-        User user = given().get(EndPoints.USER).as(User.class);
+        User user = given().get(EndPoints.USER, UserSettings.getUserID()).as(User.class);
         assertThat(user.name, equalTo("Clementine Bauch"));
-        assertThat(user.id, equalTo(Settings.SAMANTHA_ID));
+        //assertThat(user.id, equalTo(RestAssuredSettings.SAMANTHA_ID));
         assertThat(user.username, equalTo("Samantha"));
         assertThat(user.email, equalTo("Nathan@yesenia.net"));
         assertThat(user.phone, equalTo("1-463-123-4447"));

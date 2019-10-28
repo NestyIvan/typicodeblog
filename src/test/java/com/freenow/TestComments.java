@@ -29,14 +29,14 @@ public class TestComments {
 
     @BeforeClass
     public static void setUp() {
-        RestAssured.requestSpecification = Settings.requestSpec;
-        RestAssured.responseSpecification = Settings.responseSpec;
+        RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
+        RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
     }
 
     private void initPosts(){
         //Get the list of posts.
         List<Map<String, Object>> posts = given()
-                .get(EndPoints.POSTS).as(new TypeRef<List<Map<String, Object>>>() {});
+                .get(EndPoints.POSTS, UserSettings.getUserID()).as(new TypeRef<List<Map<String, Object>>>() {});
         concurrentPosts = new ConcurrentLinkedQueue();
         concurrentPosts.addAll(posts);
         assertTrue("No posts have been found for the user",concurrentPosts.size() > 0);
@@ -77,6 +77,12 @@ public class TestComments {
         }
     }
 
+    /*
+    * This should be at least discussed in the team.
+    * There could be different reasons to modify the logic of this method.
+    * What kind of the environment is going to be used?
+    * What are the other tests and their priority?
+    */
     private int getCoreNumber(){
         int cores = Runtime.getRuntime().availableProcessors();
         return Math.min(cores, concurrentPosts.size());

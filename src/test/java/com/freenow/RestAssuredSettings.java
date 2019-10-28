@@ -7,9 +7,8 @@ import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
-public final class Settings {
+public final class RestAssuredSettings {
     public static String BASE_URI = System.getProperty("blog.base.uri");
-    public static final int SAMANTHA_ID = Integer.parseInt(System.getProperty("samantha.id"));
 
     public static final RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri(BASE_URI)
