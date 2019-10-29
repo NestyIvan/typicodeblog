@@ -7,6 +7,7 @@ import com.freenow.pojos.User;
 import com.freenow.settings.RestAssuredSettings;
 import com.freenow.settings.UserSettings;
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * A test cases to verify the user
@@ -27,6 +29,13 @@ public class UserTest {
     public static void setUp() {
         RestAssured.requestSpecification = RestAssuredSettings.requestSpec;
         RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
+    }
+
+    @Test
+    public void testResponseTime(){
+        Response response = given().get(EndPoints.USER, UserSettings.getUserID());
+        assertTrue("The response time for user endpoint exceeds",
+                response.time() < RestAssuredSettings.TIME_OUT);
     }
 
     @Test

@@ -19,4 +19,5 @@ test{
     useJUnit()
     systemProperty "blog.base.uri", baseURI
     systemProperty "user.name", userName
+    systemProperty "response.timeout", responseTimeOutMS
 }

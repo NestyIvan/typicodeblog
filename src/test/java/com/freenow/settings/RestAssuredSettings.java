@@ -9,6 +9,7 @@ import io.restassured.specification.ResponseSpecification;
 
 public final class RestAssuredSettings {
     public static String BASE_URI = System.getProperty("blog.base.uri");
+    public static int TIME_OUT = Integer.parseInt(System.getProperty("response.timeout"));
 
     public static final RequestSpecification requestSpec = new RequestSpecBuilder()
             .setBaseUri(BASE_URI)

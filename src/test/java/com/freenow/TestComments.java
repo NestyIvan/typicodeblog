@@ -4,6 +4,7 @@ import com.freenow.settings.RestAssuredSettings;
 import com.freenow.settings.UserSettings;
 import io.restassured.RestAssured;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.response.Response;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -35,6 +36,13 @@ public class TestComments {
         RestAssured.responseSpecification = RestAssuredSettings.responseSpec;
     }
 
+    @Test
+    public void testPostResponseTime(){
+        Response response = given().get(EndPoints.POSTS, UserSettings.getUserID());
+        assertTrue("The response time for post endpoint exceeds",
+                response.time() < RestAssuredSettings.TIME_OUT);
+    }
+
     private void initPosts(){
         //Get the list of posts.
         List<Map<String, Object>> posts = given()
@@ -62,6 +70,7 @@ public class TestComments {
             logger.error(String.format("The email %s of the post %s is in wrong format.", email, postID));
             return false;
         }
+        //logger.info(String.format("The email %s of the post %s is good.", email, postID));
         return true;
     }
 
