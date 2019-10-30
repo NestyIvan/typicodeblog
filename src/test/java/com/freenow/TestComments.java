@@ -10,10 +10,11 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -102,29 +103,21 @@ public class TestComments {
     @Test
     public void testComments(){
         initPosts();
-        //Init required number of Threads. Each thread will poll the head post
+        //Init ThreadsPoolExecutor, so threads will poll the head post
         // and validate comments until there are posts in the Queue
         int cores = getCoreNumber();
         logger.info(String.format("Start processing %d posts with %d threads.",
                 concurrentPosts.size(), cores));
-        List<Thread> threads = new ArrayList<>();
-        for(int i = 0; i < cores; i++){
-            Runnable task = () -> {
-                while(concurrentPosts.size() > 0){
-                    checkPost(concurrentPosts.poll());
-                }
-            };
-            Thread t = new Thread(task);
-            threads.add(t);
-            t.start();
-        }
 
-        for(Thread t : threads){
-            try {
-                t.join();
-            } catch (InterruptedException e) {
-                logger.error("Thread was interrupted:" + e.getMessage());
+        ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor)Executors.newFixedThreadPool(cores);
+        Runnable task = () -> {
+            if(concurrentPosts.size() > 0){
+                checkPost(concurrentPosts.poll());
             }
+        };
+        while(concurrentPosts.size() > 0){
+            threadPoolExecutor.submit(task);
         }
+        threadPoolExecutor.shutdown();
     }
 }
