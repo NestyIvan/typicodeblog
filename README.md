@@ -18,6 +18,4 @@ The main test scenario is validating emails format of eeach comment left by all 
 The final regex rule should be discussed in details with the rest team.
 The test approach includes using multithreading in order to speed up the test.
 
-A few major notes should be left:
-1. The multithreading apporach is far from perfect, though it's working at this stage of the test project. Actually, I'd say it's not really acceptable for a production (assuming the project would grow eventually). There were several attempts to refactor this part with the ThreadPoolExecutor (a robust and pretty obvious solution), but there were issues with proper logging. Anyway, I'd better be honest and willn't pretend I understand multithreading good enough.
-2. The pagination wasn't also implemented as it's probably not supported by the blog itself. Neither offset nor limit filtering worked for me. In case of test data grows to a production-like size (million of comments for example) that could become a problem. However, for the current data volumes (500 comments per post) it's not a problem.
+The pagination wasn't implemented as it's probably not supported by the blog itself. Neither offset nor limit filtering worked for me. In case of test data grows to a production-like size (million of comments for example) that could become a problem. However, for the current data volumes (500 comments per post) it's not a problem.
